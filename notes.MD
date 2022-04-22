@@ -220,4 +220,34 @@ function getFilledArray<T>(value: T, n: number): T[] {
 
  ## UNION TYPES
 
+Allows for the variable to be more than one specific type
+ ```ts 
+let ID: string | number;
  
+// number
+ID = 1;
+ 
+// or string
+ID = '001';
+ 
+console.log(`The ID is ${ID}.`);
+ ```
+
+ can also narrow union typing by setting the condition in the function 
+
+ ```ts
+function getMarginLeft(margin: string | number) {
+  // margin may be a string or number here
+ 
+  if (typeof margin === 'string') {
+    // margin must be a string here
+    return margin.toLowerCase();
+  }
+}
+ ```
+
+ ### Inferred Union Return Types 
+
+ ```ts
+
+ ```
