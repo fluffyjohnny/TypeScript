@@ -247,7 +247,50 @@ function getMarginLeft(margin: string | number) {
  ```
 
  ### Inferred Union Return Types 
+- TypeScript will look at the contents of a function and infer which types the function can return. If there are multiple possible return types, TypeScript will infer the return type as a union.
 
  ```ts
+type User = {
+  id: number;
+  username: string;
+};
 
+function createUser() {
+  const randomChance = Math.random() >= 0.5;
+
+  if (randomChance) {
+    return { id: 1, username: 'nikko' };
+  } else {
+    return 'Could not create a user.';
+  }
+}
+
+const userData: User | string = createUser();
  ```
+
+ ### Unions and Arrays 
+ - To create a union that supports multiple types for an array’s values, wrap the union in parentheses (string | number), then use array notation [].
+```ts
+const dateNumber = new Date().getTime(); // returns a number
+const dateString = new Date().toString(); // returns a string
+ 
+const timesList: (string | number)[] = [dateNumber, dateString];
+```
+Common Key Value Pairs 
+- TypeScript will only allow us to use the common methods and properties that all members of the union share
+```ts
+const batteryStatus: boolean | number = false;
+ 
+batteryStatus.toString(); // No TypeScript error
+batteryStatus.toFixed(2); // TypeScript error
+```
+
+### Union with literal Types 
+- We can use literal types with TypeScript unions. Literal type unions are useful when we want to create distinct states within a program.
+```ts
+type Color = 'green' | 'yellow' | 'red';
+ 
+function changeLight(color: Color) {
+  // ...
+}
+```
