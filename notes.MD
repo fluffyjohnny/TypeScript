@@ -373,6 +373,202 @@ One way that TypeScript can narrow a type is with a conditional statement that c
 
 - The `typeof` operator is a type of typeguard
 
+<br>
+
 ### The `in` operator
 
 - It checks if a property exists on an object itself or anywhere within its prototype chain.
+- `in` is also considered a typegaurd
+
+```ts
+type Tennis = {
+  serve: () => void;
+};
+
+type Soccer = {
+  kick: () => void;
+};
+
+function play(sport: Tennis | Soccer) {
+  if ("serve" in sport) {
+    return sport.serve();
+  }
+
+  if ("kick" in sport) {
+    return sport.kick();
+  }
+}
+```
+
+### Narrowing with `else`
+
+TypeScript can recognize the `else` block of an `if/else` statement as being the opposite type guard check of the if statement’s type guard check.
+
+```ts
+function formatPadding(padding: string | number) {
+  if (typeof padding === "string") {
+    return padding.toLowerCase();
+  } else {
+    return `${padding}px`;
+  }
+}
+```
+
+<br>
+
+### Narrowing after a Type Guard
+
+TypeScript can also type narrow without an `else`statement, provided that there’s a `return` statement within the type guard.
+
+```ts
+type Tea = {
+  steep: () => string;
+};
+
+type Coffee = {
+  pourOver: () => string;
+};
+
+function brew(beverage: Coffee | Tea) {
+  if ("steep" in beverage) {
+    return beverage.steep();
+  }
+
+  return beverage.pourOver();
+}
+```
+
+<br><br>
+
+---
+
+<br>
+
+# Advances and Types
+
+## Interfaces and Typpes
+
+We've learned to create custom types, but we can also utilize interface to create a typed object.
+
+The biggest difference between interface and type is that interface can only be used to type `objects`, while type can be used to type `objects`, `primitives`, and more.
+
+```ts
+interface Mail {
+  postagePrice: number;
+  address: string;
+}
+
+const catalog: Mail = ...
+```
+
+<br>
+
+## Interfaces and Classes
+
+Since `interface` is constrained to typed objects and using `class` is a way to program with objects, `interface` and `class` are a great match.
+
+```ts
+interface Robot {
+  identify: (id: number) => void;
+}
+
+class OneSeries implements Robot {
+  identify(id: number) {
+    console.log(`beep! I'm ${id.toFixed(2)}.`);
+  }
+
+  answerQuestion() {
+    console.log("42!");
+  }
+}
+
+// The implements keyword is then used to apply the type Robot to OneSeries.
+```
+
+<br>
+
+## Deep Types 
+
+we may need to add nested methods and properties when our program becomes more complex. 
+
+```ts
+interface Robot {
+  about: {
+    general: {
+      id: number;
+      name: string;
+    };
+  };
+  getRobotId: () => string;
+}
+
+//
+
+class OneSeries implements Robot {
+  about;
+ 
+  constructor(props: { general: { id: number; name: string; } }) {
+    this.about = props;
+  }
+ 
+  getRobotId() {
+    return `ID: ${this.about.general.id}`;
+  }
+}
+
+// TypeScript allows us to infinitely nest objects so that we can describe data correctly.
+```
+
+<br>
+
+## Composed Types 
+We can define multiple types and reference them inside other types.
+
+```ts 
+// from this
+interface About {
+  general: {
+    id: number;
+    name: string;
+    version: {
+      versionNumber: number;
+    }
+  }
+}
+
+// to this
+interface About {
+  general: General;
+}
+ 
+interface General {
+  id: number;
+  name: string;
+  version: Version;
+}
+ 
+interface Version {
+  versionNumber: number;
+}
+
+// Composing types together is an essential way to keep our code organized and flexible.
+```
+
+<br>
+
+---
+
+## Extending Interfaces 
+In TypeScript, it’s not always enough to be able to compose types together. Sometimes it’s convenient to copy all the type members from one type into another type. We can accomplish this with the `extends` keyword.
+
+```ts
+interface Shape {
+  color: string;
+}
+ 
+interface Square extends Shape {
+  sideLength: number;
+}
+ 
+const mySquare: Square = { sideLength: 10, color: 'blue' };
+```
