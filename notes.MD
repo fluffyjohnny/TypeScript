@@ -487,9 +487,9 @@ class OneSeries implements Robot {
 
 <br>
 
-## Deep Types 
+## Deep Types
 
-we may need to add nested methods and properties when our program becomes more complex. 
+we may need to add nested methods and properties when our program becomes more complex.
 
 ```ts
 interface Robot {
@@ -506,11 +506,11 @@ interface Robot {
 
 class OneSeries implements Robot {
   about;
- 
-  constructor(props: { general: { id: number; name: string; } }) {
+
+  constructor(props: { general: { id: number; name: string } }) {
     this.about = props;
   }
- 
+
   getRobotId() {
     return `ID: ${this.about.general.id}`;
   }
@@ -521,10 +521,11 @@ class OneSeries implements Robot {
 
 <br>
 
-## Composed Types 
+## Composed Types
+
 We can define multiple types and reference them inside other types.
 
-```ts 
+```ts
 // from this
 interface About {
   general: {
@@ -532,21 +533,21 @@ interface About {
     name: string;
     version: {
       versionNumber: number;
-    }
-  }
+    };
+  };
 }
 
 // to this
 interface About {
   general: General;
 }
- 
+
 interface General {
   id: number;
   name: string;
   version: Version;
 }
- 
+
 interface Version {
   versionNumber: number;
 }
@@ -558,17 +559,69 @@ interface Version {
 
 ---
 
-## Extending Interfaces 
+## Extending Interfaces
+
 In TypeScript, it’s not always enough to be able to compose types together. Sometimes it’s convenient to copy all the type members from one type into another type. We can accomplish this with the `extends` keyword.
 
 ```ts
 interface Shape {
   color: string;
 }
- 
+
 interface Square extends Shape {
   sideLength: number;
 }
- 
-const mySquare: Square = { sideLength: 10, color: 'blue' };
+
+const mySquare: Square = { sideLength: 10, color: "blue" };
+```
+
+<br>
+
+---
+
+## Index Signatures
+
+When typing objects in TypeScript, sometimes it’s not possible to know the property names for an object, like when we get back information from an outside data source/API.
+
+```ts
+// unknown property name
+{
+  '40.712776': true;
+  '41.203323': true;
+  '40.417286': false;
+}
+
+// how to assign a name
+interface SolarEclipse {
+  [latitude: string]: boolean;
+}
+```
+
+<br>
+
+---
+
+## Optional Type Members
+
+TypeScript allows us to make some type members optional.
+
+```ts
+interface OptionsType {
+  name: string;
+  size?: string;
+}
+
+function listFile(options: OptionsType) {
+  let fileName = options.name;
+
+  if (options.size) {
+    fileName = `${fileName}: ${options.size}`;
+  }
+
+  return fileName;
+}
+
+// the property size is optional in this case.
+
+//Since .size is optional, we added a conditional to check if it exists before trying to use the .size property.
 ```
